@@ -175,17 +175,6 @@ function deleteAdvisor(id) {
   localStorage.setItem('gtawtr_advisors', JSON.stringify(list))
   loadRequests()
 }
-
-function resetAllFinances() {
-  if (confirm('DİKKAT! Tüm kullanıcıların cüzdanları, portföyleri ve borçları SIFIRLANACAKTIR! Herkes 0$ ile başlayacak. Emin misiniz?')) {
-    localStorage.removeItem('lcn_wallets')
-    localStorage.removeItem('lcn_portfolios')
-    localStorage.removeItem('lcn_loans')
-    localStorage.removeItem('lcn_history')
-    alert('Herkesin parası ve hisseleri başarıyla sıfırlandı!')
-    location.reload()
-  }
-}
 </script>
 
 <template>
@@ -286,14 +275,6 @@ function resetAllFinances() {
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <div class="admin-panel" style="border-color: var(--down-color);">
-      <h2 style="color: var(--down-color);">SİSTEM SIFIRLAMA (TEHLİKELİ BÖLGE)</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Bu buton sistemdeki herkesin parasını, hisselerini ve işlem geçmişini tamamen sıfırlar. Herkes $0 bakiye ile baştan başlar.</p>
-      <button class="submit-btn" style="width: 100%; background: var(--down-color); color: #fff;" @click="resetAllFinances">
-        TÜM KULLANICILARIN PARASINI VE HİSSELERİNİ SIFIRLA
-      </button>
     </div>
 
     <div class="admin-panel">
