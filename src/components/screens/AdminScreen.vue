@@ -8,6 +8,8 @@ const { marketData, getAllStocks, toggleCircuitBreaker, addNewStock } = useMarke
 const { blogNews, addNews, deleteNews } = useNews()
 const { userWallets, saveFinanceData } = useFinance()
 
+const isMobileView = ref(false)
+
 const breakerSelect = ref('')
 const allStocks = computed(() => getAllStocks())
 
@@ -178,11 +180,18 @@ function deleteAdvisor(id) {
 </script>
 
 <template>
-  <div class="screen">
+  <div class="admin-container">
+    <div class="screen" :class="{ 'mobile-view': isMobileView }">
     <div class="admin-panel" style="border-color: var(--down-color);">
       <h2 style="color: var(--down-color);">DEVRE KESİCİ UYGULAMASI (TRADING HALT)</h2>
       <div class="form-group">
-        <label>İşlemleri Durdurulacak / Başlatılacak Hisseyi Seçin</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <label style="margin-bottom: 0;">İşlemleri Durdurulacak / Başlatılacak Hisseyi Seçin</label>
+          <button class="submit-btn" style="padding: 5px 10px; font-size: 12px; margin: 0;" @click="isMobileView = !isMobileView">
+            <span v-if="isMobileView">🖥️ Masaüstü</span>
+            <span v-else>📱 Mobil</span>
+          </button>
+        </div>
         <select v-model="breakerSelect">
           <option v-for="s in allStocks" :key="s.id" :value="s.id">
             {{ s.ticker }} - {{ s.name }} {{ s.halted ? '(DURDURULDU)' : '(AKTİF)' }}
@@ -344,4 +353,30 @@ function deleteAdvisor(id) {
       </div>
     </div>
   </div>
+  </div>
 </template>
+
+<style scoped>
+.mobile-view {
+  max-width: 400px;
+  margin: 0 auto;
+  border: 8px solid #2c3e50;
+  border-radius: 35px;
+  height: 80vh;
+  overflow-y: auto;
+  padding: 20px 15px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
+  background-color: var(--bg-color, #121212);
+}
+
+.mobile-view .flex-row {
+  flex-direction: column !important;
+}
+
+.mobile-view .history-table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+</style>
