@@ -60,9 +60,9 @@ function tick() {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   loadTheme()
-  await loadUserData()   // async: Supabase oturumunu bekle
+  loadUserData()
   loadFinanceData()
   loadNews()
   loadMemory()

@@ -4,47 +4,41 @@ import { useToast } from './useToast'
 
 const { showToast } = useToast()
 
-const currentUser = ref(null)   // kullanıcı adı (username)
+const currentUser = ref(null)
 const authLoading = ref(false)
 const stockComments = ref({})
 
-// username -> supabase email dönüşümü (kullanıcı email bilmez)
-function toEmail(username) {
-  return `${username.toLowerCase()}@lcnterminal.app`
+async function hashPassword(password) {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
 export function useAuth() {
-  async function loadUserData() {
+  function loadUserData() {
+    currentUser.value = localStorage.getItem('lcn_current_user') || null
     stockComments.value = JSON.parse(localStorage.getItem('lcn_comments')) || {}
-
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-      currentUser.value = session.user.user_metadata?.username || session.user.email
-    }
-
-    // Oturum değişikliklerini dinle (sekme yenileme, token yenileme vb.)
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        currentUser.value = session.user.user_metadata?.username || session.user.email
-      } else {
-        currentUser.value = null
-      }
-    })
   }
 
   async function loginUser(username, password) {
     if (!username || !password) { showToast('Kullanıcı adı ve şifre boş bırakılamaz.', 'error'); return false }
     authLoading.value = true
-    const { error } = await supabase.auth.signInWithPassword({
-      email: toEmail(username),
-      password
-    })
+
+    const hash = await hashPassword(password)
+    const { data, error } = await supabase
+      .from('lcn_users')
+      .select('username, password_hash')
+      .eq('username', username)
+      .single()
+
     authLoading.value = false
-    if (error) {
-      showToast('Hatalı kullanıcı adı veya şifre.', 'error')
-      return false
-    }
+
+    if (error || !data) { showToast('Bu kullanıcı adına sahip bir hesap bulunamadı.', 'error'); return false }
+    if (data.password_hash !== hash) { showToast('Hatalı şifre girdiniz!', 'error'); return false }
+
     currentUser.value = username
+    localStorage.setItem('lcn_current_user', username)
     showToast('Giriş başarılı, hoş geldiniz!', 'success')
     return true
   }
@@ -53,27 +47,30 @@ export function useAuth() {
     if (username.length < 3 || password.length < 3) { showToast('Kullanıcı adı ve şifre en az 3 karakter olmalıdır.', 'error'); return false }
     if (password !== confirmPassword) { showToast('Girdiğiniz şifreler uyuşmuyor.', 'error'); return false }
     authLoading.value = true
-    const { error } = await supabase.auth.signUp({
-      email: toEmail(username),
-      password,
-      options: { data: { username } }
-    })
+
+    const { data: existing } = await supabase
+      .from('lcn_users')
+      .select('username')
+      .eq('username', username)
+      .single()
+
+    if (existing) { authLoading.value = false; showToast('Bu kullanıcı adı zaten alınmış.', 'error'); return false }
+
+    const hash = await hashPassword(password)
+    const { error } = await supabase
+      .from('lcn_users')
+      .insert({ username, password_hash: hash })
+
     authLoading.value = false
-    if (error) {
-      if (error.message.includes('already registered')) {
-        showToast('Bu kullanıcı adı zaten alınmış.', 'error')
-      } else {
-        showToast(error.message, 'error')
-      }
-      return false
-    }
+
+    if (error) { showToast('Kayıt sırasında bir hata oluştu.', 'error'); return false }
     showToast('Hesabınız başarıyla oluşturuldu. Giriş yapabilirsiniz.', 'success')
     return true
   }
 
-  async function logoutUser() {
-    await supabase.auth.signOut()
+  function logoutUser() {
     currentUser.value = null
+    localStorage.removeItem('lcn_current_user')
     showToast('Oturum kapatıldı.', 'info')
   }
 
