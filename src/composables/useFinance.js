@@ -31,7 +31,7 @@ export function useFinance() {
   function ensureProfile() {
     const u = currentUser.value
     if (!u) return
-    if (!userWallets.value[u]) userWallets.value[u] = 10000
+    if (userWallets.value[u] === undefined) userWallets.value[u] = 0
     if (!userPortfolios.value[u]) userPortfolios.value[u] = {}
     if (!userHistory.value[u]) userHistory.value[u] = []
     if (!userWatchlist.value[u]) userWatchlist.value[u] = []
