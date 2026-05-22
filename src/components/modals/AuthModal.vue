@@ -4,7 +4,7 @@ import { useAuth } from '../../composables/useAuth'
 import { useFinance } from '../../composables/useFinance'
 
 const emit = defineEmits(['close'])
-const { loginUser, registerUser } = useAuth()
+const { loginUser, registerUser, authLoading } = useAuth()
 const { ensureProfile } = useFinance()
 
 const activeTab = ref('login')
@@ -14,16 +14,20 @@ const registerUsername = ref('')
 const registerPassword = ref('')
 const registerPasswordConfirm = ref('')
 
-function handleLogin() {
-  const ok = loginUser(loginUsername.value.trim(), loginPassword.value.trim())
+async function handleLogin() {
+  const ok = await loginUser(loginUsername.value.trim(), loginPassword.value.trim())
   if (ok) {
     ensureProfile()
     emit('close')
   }
 }
 
-function handleRegister() {
-  const ok = registerUser(registerUsername.value.trim(), registerPassword.value.trim(), registerPasswordConfirm.value.trim())
+async function handleRegister() {
+  const ok = await registerUser(
+    registerUsername.value.trim(),
+    registerPassword.value.trim(),
+    registerPasswordConfirm.value.trim()
+  )
   if (ok) {
     loginUsername.value = registerUsername.value
     loginPassword.value = ''
@@ -48,30 +52,34 @@ function handleRegister() {
         <h2>Yatırımcı Terminaline Giriş</h2>
         <div class="form-group">
           <label>Kullanıcı Adı</label>
-          <input v-model="loginUsername" type="text" placeholder="Kullanıcı Adınız..." />
+          <input v-model="loginUsername" type="text" placeholder="Kullanıcı Adınız..." :disabled="authLoading" />
         </div>
         <div class="form-group">
           <label>Şifre</label>
-          <input v-model="loginPassword" type="password" placeholder="••••••••" @keypress.enter="handleLogin" />
+          <input v-model="loginPassword" type="password" placeholder="••••••••" :disabled="authLoading" @keypress.enter="handleLogin" />
         </div>
-        <button class="submit-btn" @click="handleLogin">GİRİŞ YAP</button>
+        <button class="submit-btn" :disabled="authLoading" @click="handleLogin">
+          {{ authLoading ? 'GİRİŞ YAPILIYOR...' : 'GİRİŞ YAP' }}
+        </button>
       </div>
 
       <div v-if="activeTab === 'register'" class="auth-form">
         <h2>Yeni Yatırımcı Hesabı Oluştur</h2>
         <div class="form-group">
           <label>Kullanıcı Adı</label>
-          <input v-model="registerUsername" type="text" placeholder="En az 3 karakter..." />
+          <input v-model="registerUsername" type="text" placeholder="En az 3 karakter..." :disabled="authLoading" />
         </div>
         <div class="form-group">
           <label>Şifre</label>
-          <input v-model="registerPassword" type="password" placeholder="En az 3 karakter..." />
+          <input v-model="registerPassword" type="password" placeholder="En az 3 karakter..." :disabled="authLoading" />
         </div>
         <div class="form-group">
           <label>Şifre Tekrar</label>
-          <input v-model="registerPasswordConfirm" type="password" placeholder="Şifrenizi doğrulayın..." @keypress.enter="handleRegister" />
+          <input v-model="registerPasswordConfirm" type="password" placeholder="Şifrenizi doğrulayın..." :disabled="authLoading" @keypress.enter="handleRegister" />
         </div>
-        <button class="submit-btn" @click="handleRegister">HESAP OLUŞTUR</button>
+        <button class="submit-btn" :disabled="authLoading" @click="handleRegister">
+          {{ authLoading ? 'HESAP OLUŞTURULUYOR...' : 'HESAP OLUŞTUR' }}
+        </button>
       </div>
     </div>
   </div>
