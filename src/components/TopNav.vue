@@ -21,11 +21,20 @@ function searchStocks(query) {
   })
 }
 
-const ADMIN_PASS = 'patron'
 function checkAdminAccess() {
-  const pass = prompt('Güvenli Bölge. Lütfen yetkili şifrenizi girin:')
-  if (pass === ADMIN_PASS) emit('navigate', 'admin')
-  else if (pass !== null) alert('Hatalı şifre!')
+  // Eğer halihazırda danieladmin hesabıyla giriş yapılmışsa direkt yönlendir:
+  if (currentUser.value === 'danieladmin') {
+    emit('navigate', 'admin')
+    return
+  }
+  // Giriş yapılmamışsa prompt ile sor:
+  const user = prompt('Güvenli Bölge. Lütfen yetkili kullanıcı adınızı girin:')
+  if (user === null) return
+  const pass = prompt('Lütfen yetkili şifrenizi girin:')
+  if (pass === null) return
+  
+  if (user === 'danieladmin' && pass === 'danieladmin') emit('navigate', 'admin')
+  else alert('Hatalı kullanıcı adı veya şifre! Sadece yetkililer girebilir.')
 }
 
 function handleLogout() {
@@ -45,14 +54,14 @@ function handleLogout() {
       @input="searchStocks($event.target.value)"
     />
     <span v-if="currentUser" class="user-info-text">Yatırımcı: @{{ currentUser }}</span>
-    <button class="nav-btn" @click="toggleTheme">{{ isLight ? '🌙 TEMA' : '☀️ TEMA' }}</button>
-    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'portfolio' }" @click="emit('navigate', 'portfolio')">💼 PORTFÖYÜM</button>
-    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'watchlist' }" @click="emit('navigate', 'watchlist')">⭐ İZLEME LİSTESİ</button>
-    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'history' }" @click="emit('navigate', 'history')">📜 İŞLEM GEÇMİŞİ</button>
-    <button class="nav-btn" :class="{ active: activeScreen === 'compare' }" @click="emit('navigate', 'compare')">KARŞILAŞTIR ⚖️</button>
+    <button class="nav-btn" @click="toggleTheme">TEMA</button>
+    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'portfolio' }" @click="emit('navigate', 'portfolio')">PORTFÖYÜM</button>
+    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'watchlist' }" @click="emit('navigate', 'watchlist')">İZLEME LİSTESİ</button>
+    <button v-if="currentUser" class="nav-btn" :class="{ active: activeScreen === 'history' }" @click="emit('navigate', 'history')">İŞLEM GEÇMİŞİ</button>
+    <button class="nav-btn" :class="{ active: activeScreen === 'compare' }" @click="emit('navigate', 'compare')">KARŞILAŞTIR</button>
     <button class="nav-btn" :class="{ active: activeScreen === 'dashboard' }" @click="emit('navigate', 'dashboard')">TERMINAL EKRANI</button>
-    <button v-if="!currentUser" class="nav-btn" @click="emit('open-auth')">ÜYE GİRİŞİ / KAYIT 👤</button>
+    <button v-if="!currentUser" class="nav-btn" @click="emit('open-auth')">ÜYE GİRİŞİ / KAYIT</button>
     <button v-if="currentUser" class="nav-btn" @click="handleLogout">ÇIKIŞ YAP</button>
-    <button class="nav-btn" @click="checkAdminAccess">YETKİLİ GİRİŞİ 🔒</button>
+    <button class="nav-btn" @click="checkAdminAccess">YETKİLİ GİRİŞİ</button>
   </div>
 </template>

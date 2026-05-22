@@ -85,7 +85,7 @@ function findStock(id) {
   return getAllStocks().find(x => x.id === id)
 }
 
-function simulateTick({ currentUser, userPortfolios, userWallets, saveFinanceData, updateWalletCb, logTransaction } = {}) {
+function simulateTick({ currentUser, userPortfolios, userWallets, saveFinanceData, updateWalletCb, logTransaction, addNews } = {}) {
   let totalIdx = 0
   let count = 0
   getAllStocks().forEach(s => {
@@ -110,6 +110,7 @@ function simulateTick({ currentUser, userPortfolios, userWallets, saveFinanceDat
     const allS = getAllStocks()
     const rndStock = allS[Math.floor(Math.random() * allS.length)]
     const eventType = Math.random()
+    const shouldPublishNews = Math.random() < 0.3 // Belirli aralıklarla basın bülteni de yayınlasın
     if (eventType < 0.3) {
       if (currentUser && userPortfolios && userPortfolios[currentUser] && userPortfolios[currentUser][rndStock.id]) {
         const p = userPortfolios[currentUser][rndStock.id]
@@ -121,18 +122,51 @@ function simulateTick({ currentUser, userPortfolios, userWallets, saveFinanceDat
           if (saveFinanceData) saveFinanceData()
           if (updateWalletCb) updateWalletCb()
           if (logTransaction) logTransaction(rndStock.id, 'TEMETTÜ', lot, curPrice, dividend)
-          showToast(`💰 TEMETTÜ: ${rndStock.ticker} hissedarlarına temettü dağıttı! $${dividend.toFixed(2)} kazandınız.`, 'success')
+          showToast(`TEMETTÜ: ${rndStock.ticker} hissedarlarına temettü dağıttı! $${dividend.toFixed(2)} kazandınız.`, 'success')
         }
+      }
+      if (shouldPublishNews && addNews) {
+        const titles = [
+          `CEO AÇIKLAMASI: ${rndStock.name} Temettü Dağıtıyor`,
+          `BASIN BÜLTENİ: ${rndStock.ticker} Yatırımcılarına Müjde`
+        ]
+        const contents = [
+          `${rndStock.name} Yönetim Kurulu olarak, bu çeyrekte elde ettiğimiz güçlü nakit akışını yatırımcılarımızla paylaşmaktan gurur duyuyoruz. Sürdürülebilir büyüme vizyonumuz hız kesmeden devam edecek.`,
+          `Şirket sözcümüzün yaptığı son açıklamaya göre, rekor kârlılık oranları sayesinde tüm hissedarlarımıza kâr payı (temettü) dağıtımı gerçekleştirilmiştir. Bize güvenen herkese teşekkür ederiz.`
+        ]
+        addNews(titles[Math.floor(Math.random() * titles.length)], contents[Math.floor(Math.random() * contents.length)])
       }
     } else if (eventType < 0.65) {
       rndStock.basePrice *= 1.05
       if (currentUser && userPortfolios && userPortfolios[currentUser] && userPortfolios[currentUser][rndStock.id]) {
-        showToast(`📰 HABER: ${rndStock.ticker} şirketinden harika çeyrek raporu! Hisseler uçuşta.`, 'success')
+        showToast(`HABER: ${rndStock.ticker} şirketinden harika çeyrek raporu! Hisseler uçuşta.`, 'success')
+      }
+      if (shouldPublishNews && addNews) {
+        const titles = [
+          `BASIN BÜLTENİ: ${rndStock.name} Beklentileri Aştı`,
+          `CEO AÇIKLAMASI: ${rndStock.ticker} Yeni Yatırımlarını Duyurdu`
+        ]
+        const contents = [
+          `Şirketimiz ${rndStock.name}, son çeyrekte analist beklentilerini %20 oranında aşarak rekor bir ciroya ulaşmıştır. Şirket CEO'su, "Yenilikçi adımlarımız pazar payımızı katlıyor, hisse değerlerimizdeki bu yükseliş tamamen organik" dedi.`,
+          `Yeni AR-GE yatırımlarımızın sonuç vermeye başlamasıyla pazar hakimiyetimizi güçlendirdik. Borsadaki pozitif ivmemizin ardında sağlam bir şirket kültürü ve inovasyon yatmaktadır.`
+        ]
+        addNews(titles[Math.floor(Math.random() * titles.length)], contents[Math.floor(Math.random() * contents.length)])
       }
     } else {
       rndStock.basePrice *= 0.95
       if (currentUser && userPortfolios && userPortfolios[currentUser] && userPortfolios[currentUser][rndStock.id]) {
-        showToast(`📰 HABER: ${rndStock.ticker} şirketinde skandal! Hisseler düşüyor.`, 'error')
+        showToast(`HABER: ${rndStock.ticker} şirketinde skandal! Hisseler düşüyor.`, 'error')
+      }
+      if (shouldPublishNews && addNews) {
+        const titles = [
+          `KAMUOYUNA DUYURU: ${rndStock.name} Tedarik Zinciri Sorunları`,
+          `CEO'DAN MESAJ: ${rndStock.ticker} Dalgalanmaları Hakkında`
+        ]
+        const contents = [
+          `${rndStock.name} olarak küresel tedarik zincirinde yaşanan aksaklıklar sebebiyle üretim hedeflerimizin gerisinde kaldık. Yönetim kurulumuz zararı minimize etmek için acil eylem planını devreye almıştır.`,
+          `Son günlerde ${rndStock.ticker} hisselerinde yaşanan düşüş ve medyada yer alan spekülasyonlar yakından takip edilmektedir. Şirketimiz temelleri sağlamdır, panik satışlarından uzak durulması tavsiye olunur.`
+        ]
+        addNews(titles[Math.floor(Math.random() * titles.length)], contents[Math.floor(Math.random() * contents.length)])
       }
     }
   }
