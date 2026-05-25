@@ -1,0 +1,28 @@
+@model GoPostalMVC.Models.Shipment
+
+<div class="tracking-panel" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <h2>Kargo Durumu: <span style="color: #1A365D;">@Model.Status</span></h2>
+    
+    <hr />
+
+    <!-- Yalnızca kargo Dağıtımda ise ve Kurye atanmışsa bu blok çalışır -->
+    @if (Model.Status == "Dağıtımda" && Model.Courier != null)
+    {
+        <div class="courier-info-card" style="border: 2px solid #E3242B; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 20px; background-color: #F8FAFC; margin-top: 20px;">
+            <img src="@Model.Courier.ProfileImageUrl" alt="Kurye Fotoğrafı" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #1A365D;" />
+            
+            <div>
+                <h3 style="margin: 0 0 8px 0; color: #1A365D;">Kurye Bilgileri</h3>
+                <p style="margin: 0; font-size: 15px;"><strong>Ad Soyad:</strong> @Model.Courier.FullName</p>
+                <p style="margin: 5px 0 0 0; font-size: 15px;"><strong>Telefon:</strong> @Model.Courier.PhoneNumber</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Kargo dağıtımda değilse (Örn: Hazırlanıyor) kurye bilgileri gizlenir ve sadece bu ufak not gösterilir -->
+        <div style="margin-top: 20px; padding: 15px; background-color: #f1f1f1; border-radius: 8px; color: #666; font-size: 14px;">
+            Kurye bilgisi şu an için gösterilemiyor. (Kargonuz dağıtıma çıktığında kurye detayları burada belirecektir.)
+        </div>
+    }
+</div>
