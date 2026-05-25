@@ -1,0 +1,6 @@
+@GoPostalApi_HostAddress = http://localhost:5156
+
+GET {{GoPostalApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
