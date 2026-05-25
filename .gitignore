@@ -458,4 +458,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 >>>>>>> 76c626d (Geçmiş temizlendi ve güvenli API Key eklendi)
+=======
+src/App.vue
+>>>>>>> 403d466 (ddd)
