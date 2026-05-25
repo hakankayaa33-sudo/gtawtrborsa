@@ -12,17 +12,9 @@ const activeTab = ref('tracking') // 'tracking', 'adminLogin', 'adminDashboard'
 const shipments = ref([])
 const trackingEvents = ref([])
 
-// GitHub'ın güvenlik tarayıcısını atlatmak için anahtarı parçalara bölüyoruz.
-// Tarayıcı bu parçaları birleştirip sorunsuz kullanacak, ancak GitHub bunu sızıntı olarak algılayamayacak.
-const p1 = 'MTUwODI4MjIzN'
-const p2 = 'DI2MjY1NTE2Nw.G'
-const p3 = '6Q_P1.a9up-6OC-G'
-const p4 = '5KUUyeEyGgSBdRgeMH4qV50OnH2w'
-
-// C# API'nizdeki Güvenli API Anahtarı (Geçmiş kodlarınızdan alınmıştır)
 const API_HEADERS = {
   'Content-Type': 'application/json',
-  'X-API-KEY': p1 + p2 + p3 + p4
+  'X-API-KEY': import.meta.env.VITE_API_KEY
 }
 
 // LÜTFEN AŞAĞIDAKİ LİNKİ RENDER.COM'DAN ALDIĞINIZ KENDİ API LİNKİNİZ İLE DEĞİŞTİRİN:
