@@ -10,12 +10,14 @@ const activeTab = ref('tracking') // 'tracking', 'adminLogin', 'adminDashboard'
 
 // Data
 const shipments = ref([])
+const apiKeyValue = ref(import.meta.env.VITE_API_KEY) // Reactive API Key
 const trackingEvents = ref([])
 
-const API_HEADERS = {
+// Computed property for API_HEADERS to react to apiKeyValue changes
+const computedApiHeaders = computed(() => ({
   'Content-Type': 'application/json',
-  'X-API-KEY': import.meta.env.VITE_API_KEY
-}
+  'X-API-KEY': apiKeyValue.value
+}))
 
 // LÜTFEN AŞAĞIDAKİ LİNKİ RENDER.COM'DAN ALDIĞINIZ KENDİ API LİNKİNİZ İLE DEĞİŞTİRİN:
 const API_BASE_URL = 'https://gopostal.onrender.com'
@@ -23,7 +25,7 @@ const API_BASE_URL = 'https://gopostal.onrender.com'
 async function initDB() {
   try {
     // Tüm verileri C# backendinizden çeker
-    const res = await fetch(`${API_BASE_URL}/api/Kargo/getAll`, { headers: API_HEADERS })
+    const res = await fetch(`${API_BASE_URL}/api/Kargo/getAll`, { headers: computedApiHeaders.value })
     if (res.ok) {
       const data = await res.json()
       shipments.value = data.shipments || []
@@ -137,8 +139,8 @@ async function addShipment() {
   }
   try {
     await fetch(`${API_BASE_URL}/api/Kargo/add-shipment`, {
-      method: 'POST',
-      headers: API_HEADERS,
+      method: 'POST', 
+      headers: computedApiHeaders.value,
       body: JSON.stringify(newShipment.value)
     })
     alert('Kargo başarıyla veritabanına eklendi!')
@@ -159,8 +161,8 @@ async function addEvent() {
   }
   try {
     await fetch(`${API_BASE_URL}/api/Kargo/add-event`, {
-      method: 'POST',
-      headers: API_HEADERS,
+      method: 'POST', 
+      headers: computedApiHeaders.value,
       body: JSON.stringify({
         shipmentId: selectedShipmentId.value,
         status: newEvent.value.status,
@@ -192,8 +194,8 @@ async function quickUpdateStatus(shipmentId) {
   }
   try {
     await fetch(`${API_BASE_URL}/api/Kargo/add-event`, {
-      method: 'POST',
-      headers: API_HEADERS,
+      method: 'POST', 
+      headers: computedApiHeaders.value,
       body: JSON.stringify({ 
         shipmentId, status, location: 'Sistem Güncellemesi', description: `Kargo durumu ${status} olarak güncellendi.` 
       })
@@ -327,6 +329,16 @@ async function quickUpdateStatus(shipmentId) {
             <div class="gp-form-group"><label>Kurye Adı Soyadı</label><input v-model="newShipment.courierName" class="gp-input w-100" placeholder="Örn: John Doe" /></div>
             <div class="gp-form-group"><label>Kurye Profil Fotoğrafı (URL)</label><input v-model="newShipment.courierPhoto" class="gp-input w-100" placeholder="https://..." /></div>
             <button class="btn-gp-blue w-100 mt-2" @click="addShipment">KARGO OLUŞTUR</button>
+          </div>
+
+          <!-- API Key Yönetimi -->
+          <div class="gp-card">
+            <h4 class="gp-card-title">API Anahtarı Yönetimi</h4>
+            <div class="gp-form-group">
+              <label>X-API-KEY</label>
+              <input type="text" v-model="apiKeyValue" class="gp-input w-100" placeholder="API Anahtarınızı girin..." />
+            </div>
+            <p class="text-muted small" style="font-size: 12px; color: #6c757d;">Bu anahtar, tüm API çağrılarında `X-API-KEY` başlığı olarak kullanılacaktır.</p>
           </div>
 
           <!-- Kargo Hareketi Ekle -->
