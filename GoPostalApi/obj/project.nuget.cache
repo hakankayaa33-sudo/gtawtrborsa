@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fZ9vKoj99FA=",
+  "dgSpecHash": "u7ne+SNpzAg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\GoPostalApi.csproj",
+  "projectFilePath": "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hakan Tasarım\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Hakan Tasarım\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
