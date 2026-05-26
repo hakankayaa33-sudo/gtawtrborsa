@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\GoPostalApi.csproj": {}
+    "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\GoPostalApi.csproj": {
+    "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\GoPostalApi.csproj",
+        "projectUniqueName": "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
         "projectName": "GoPostalApi",
-        "projectPath": "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\GoPostalApi.csproj",
+        "projectPath": "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
         "packagesPath": "C:\\Users\\Hakan Tasarım\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Hakan Tasarım\\Desktop\\GoPostalApi\\obj\\",
+        "outputPath": "C:\\gtawtrborsa\\GoPostalApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hakan Tasarım\\AppData\\Roaming\\NuGet\\NuGet.Config"
