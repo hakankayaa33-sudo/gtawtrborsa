@@ -1,0 +1,144 @@
+:root {
+  --gp-blue: #0047AB; /* Keskin Go Postal Mavisi */
+  --gp-red: #D3122A;  /* Keskin Go Postal Kırmızısı */
+  --bg: #F4F6F8;      
+  --fg: #000000;      
+  --card: #ffffff;
+  --muted-fg: #444444;
+  --border: #000000;
+  --radius: 0px; /* GTA Stili için keskin köşeler */
+  --shadow: 10px 10px 0px #000000;
+  --gta-font: 'Arial Black', 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--gta-font);
+  background: var(--bg);
+  color: var(--fg);
+  overflow-x: hidden;
+  background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.hero-section {
+  padding: 8rem 0;
+  text-align: center;
+  background: #fff;
+  border-bottom: 6px solid var(--gp-blue);
+  position: relative;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 6px;
+  background: var(--gp-red);
+  z-index: 10;
+}
+
+.search-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  display: flex;
+  background: #fff;
+  padding: 8px;
+  border-radius: 0;
+  border: 4px solid #000;
+  box-shadow: 12px 12px 0px #000;
+  transition: all 0.2s;
+}
+
+.search-container:focus-within {
+  transform: translate(-4px, -4px);
+  box-shadow: 16px 16px 0px var(--gp-blue);
+}
+
+.search-input { 
+  width: 100%; 
+  padding: 0 1.5rem; 
+  border: none;
+  background: transparent; 
+  color: #000; 
+  font-size: 1.25rem; 
+  font-weight: 900;
+  outline: none; 
+  text-transform: uppercase;
+}
+
+.badge { 
+  display: inline-flex; 
+  align-items: center; 
+  padding: 8px 16px; 
+  border-radius: 0; 
+  background: var(--gp-blue); 
+  color: #fff; 
+  font-size: 0.9rem; 
+  font-weight: 900; 
+  margin-bottom: 1.5rem; 
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 3px solid #000;
+}
+
+.service-card {
+  background: var(--card);
+  border: 4px solid #000;
+  border-radius: 0;
+  padding: 3rem;
+  text-align: center;
+  transition: all 0.2s;
+  box-shadow: 8px 8px 0px #000;
+}
+
+.service-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0px var(--gp-red);
+}
+
+.btn-gp-search {
+  height: 64px;
+  padding: 0 1.5rem;
+  background: var(--gp-red);
+  color: #fff;
+  border-radius: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  border: 4px solid #000;
+  white-space: nowrap;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-gp-search:hover { background: #f02d3d; }
+
+.footer-gp {
+  background: #000;
+  color: #fff;
+  padding: 5rem 0;
+  border-top: 8px solid var(--gp-red);
+  text-align: center;
+}
+
+.breathing-logo {
+  animation: gta-pulse 3s ease-in-out infinite;
+}
+
+@keyframes gta-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(227, 29, 45, 0.3)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(0, 71, 171, 0.5)); }
+}
