@@ -1,36 +1,20 @@
 globalThis.__BUILD_MANIFEST = {
-  "polyfillFiles": [
-    "static/chunks/polyfills.js"
-  ],
-  "devFiles": [
-    "static/chunks/fallback/react-refresh.js"
-  ],
-  "ampDevFiles": [
-    "static/chunks/fallback/webpack.js",
-    "static/chunks/fallback/amp.js"
-  ],
-  "lowPriorityFiles": [],
-  "rootMainFiles": [
-    "static/chunks/fallback/webpack.js",
-    "static/chunks/fallback/main-app.js"
-  ],
-  "rootMainFilesTree": {},
   "pages": {
-    "/_app": [
-      "static/chunks/fallback/webpack.js",
-      "static/chunks/fallback/main.js",
-      "static/chunks/fallback/pages/_app.js"
-    ],
-    "/_error": [
-      "static/chunks/fallback/webpack.js",
-      "static/chunks/fallback/main.js",
-      "static/chunks/fallback/pages/_error.js"
-    ]
+    "/_app": []
   },
-  "ampFirstPages": []
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/03~yq9q893hmn.js"
+  ],
+  "lowPriorityFiles": [
+    "static/OfDfEbko-jrKHPwPvL5IR/_buildManifest.js",
+    "static/OfDfEbko-jrKHPwPvL5IR/_ssgManifest.js",
+    "static/OfDfEbko-jrKHPwPvL5IR/_clientMiddlewareManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/0ht900cau6_ur.js",
+    "static/chunks/03cnjj9mnzy_p.js",
+    "static/chunks/07lhk_q6pmm3r.js",
+    "static/chunks/turbopack-0bxcrz71-nfi1.js"
+  ]
 };
-globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
-"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
-,"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js",
-
-];
