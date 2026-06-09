@@ -8,23 +8,22 @@ const outfit = Outfit({
 });
 
 const dmMono = DM_Mono({
-  subsets: ['latin'],
   weight: ['400', '500'],
+  subsets: ['latin'],
   display: 'swap',
   variable: '--font-dm-mono',
 });
 
 export const metadata = {
-  title: 'Postacı - Kargo Takip',
-  description: 'Kargonuzu anında takip edin.',
+  title: 'GoPostal - San Andreas Kargo Servisi',
+  description: 'Hızlı, güvenilir ve anlık takipli kargo hizmeti.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr" className={`${outfit.variable} ${dmMono.variable} dark`}>
-      <body className="bg-background text-foreground min-h-screen">
-        {children}
-      </body>
+    <html lang="tr" className={`${outfit.variable} ${dmMono.variable}`}>
+      <head />
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }

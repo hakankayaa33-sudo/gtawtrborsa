@@ -1181,11 +1181,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
+      "projectUniqueName": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
       "projectName": "GoPostalApi",
-      "projectPath": "C:\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
+      "projectPath": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa\\GoPostalApi\\GoPostalApi.csproj",
       "packagesPath": "C:\\Users\\Hakan Tasarım\\.nuget\\packages\\",
-      "outputPath": "C:\\gtawtrborsa\\GoPostalApi\\obj\\",
+      "outputPath": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa\\GoPostalApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Hakan Tasarım\\AppData\\Roaming\\NuGet\\NuGet.Config"

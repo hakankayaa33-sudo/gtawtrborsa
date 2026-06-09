@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Hakan%20Tasar%C4%B1m/Desktop/gtawtrborsa/supabase.js"],"sourcesContent":["import { createClient } from '@supabase/supabase-js'\r\n\r\nconst supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL\r\nconst supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY\r\n\r\nif (typeof window !== 'undefined') {\r\n  if (!supabaseUrl || !supabaseAnonKey) {\r\n    console.error(\r\n      \"❌ Supabase API Anahtarları Bulunamadı!\\n\" +\r\n      \"Hata Kaynağı: NEXT_PUBLIC_SUPABASE_URL veya NEXT_PUBLIC_SUPABASE_ANON_KEY boş.\\n\" +\r\n      \"Çözüm: .env.local dosyasını kontrol edin ve 'npm run dev' komutunu yeniden başlatın.\"\r\n    );\r\n  }\r\n}\r\n\r\nexport const supabase = (supabaseUrl && supabaseAnonKey) \r\n  ? createClient(supabaseUrl, supabaseAnonKey) \r\n  : null;"],"names":["supabaseUrl","supabaseAnonKey","supabase"],"mappings":";;;;AAAA;;AAEA,MAAMA;AACN,MAAMC;AAEN;;AAUO,MAAMC,WAAW,uCACpB,IAAA,8LAAY,EAACF,aAAaC,mBAC1B"}}]
+}

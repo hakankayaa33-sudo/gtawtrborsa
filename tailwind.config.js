@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: 'class',
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -19,8 +19,11 @@ module.exports = {
         accent: '#293286',
       },
       fontFamily: {
-        sans: ['var(--font-outfit)'],
-        mono: ['var(--font-dm-mono)'],
+        sans: ['var(--font-outfit)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-dm-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      backgroundImage: {
+        'custom-bg': "url('/background2.webp')",
       },
     },
   },
