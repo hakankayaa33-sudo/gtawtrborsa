@@ -10,7 +10,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -429,6 +428,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 =======
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
 # Logs
 logs
 *.log
@@ -459,7 +459,11 @@ dist-ssr
 *.sln
 *.sw?
 <<<<<<< HEAD
->>>>>>> 76c626d (Geçmiş temizlendi ve güvenli API Key eklendi)
+# Local Netlify folder
+.netlify
+
+# GTA World OAuth secret config (gercek dosya public_html disinda tutulur)
+private-config.php
 =======
 src/App.vue
->>>>>>> 403d466 (ddd)
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e

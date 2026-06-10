@@ -11,7 +11,7 @@ self.__SERVER_FILES_MANIFEST={
     "cleanDistDir": true,
     "assetPrefix": "",
     "cacheMaxMemorySize": 52428800,
-    "configOrigin": "default",
+    "configOrigin": "next.config.js",
     "useFileSystemPublicRoutes": true,
     "generateEtags": true,
     "pageExtensions": [
@@ -84,7 +84,7 @@ self.__SERVER_FILES_MANIFEST={
     "productionBrowserSourceMaps": false,
     "excludeDefaultMomentLocales": true,
     "reactProductionProfiling": false,
-    "reactStrictMode": null,
+    "reactStrictMode": true,
     "reactMaxHeadersLength": 6000,
     "httpAgentOptions": {
       "keepAlive": true
@@ -96,6 +96,7 @@ self.__SERVER_FILES_MANIFEST={
     "compiler": {},
     "expireTime": 31536000,
     "staticPageGenerationTimeout": 60,
+    "output": "export",
     "modularizeImports": {
       "@mui/icons-material": {
         "transform": "@mui/icons-material/{{member}}"
@@ -104,7 +105,7 @@ self.__SERVER_FILES_MANIFEST={
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "C:\\gtawtrborsa",
+    "outputFileTracingRoot": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -220,7 +221,6 @@ self.__SERVER_FILES_MANIFEST={
       "turbopackFileSystemCacheForBuild": false,
       "turbopackInferModuleSideEffects": true,
       "turbopackPluginRuntimeStrategy": "childProcesses",
-      "middlewarePrefetch": "flexible",
       "optimizePackageImports": [
         "lucide-react",
         "date-fns",
@@ -305,13 +305,14 @@ self.__SERVER_FILES_MANIFEST={
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.js",
     "turbopack": {
-      "root": "C:\\gtawtrborsa"
+      "root": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "C:\\gtawtrborsa",
+  "appDir": "C:\\Users\\Hakan Tasarım\\Desktop\\gtawtrborsa",
   "relativeAppDir": "",
   "files": [
+    ".next\\package.json",
     ".next\\routes-manifest.json",
     ".next\\server\\pages-manifest.json",
     ".next\\build-manifest.json",

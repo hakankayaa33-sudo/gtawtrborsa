@@ -1,3 +1,12 @@
 {
+<<<<<<< HEAD
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "dsznajder.es7-react-js-snippets",
+    "bradlc.vscode-tailwindcss"
+  ]
+=======
   "recommendations": ["Vue.volar"]
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
 }

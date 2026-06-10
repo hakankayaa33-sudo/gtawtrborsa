@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 self.__INTERCEPTION_ROUTE_REWRITE_MANIFEST="[]";
+=======
+self.__INTERCEPTION_ROUTE_REWRITE_MANIFEST="[]"
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e

@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    /* Tailwind config'deki renkleri body'ye uygular */
+    @apply bg-background text-foreground antialiased font-sans;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+=======
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,3 +32,4 @@
 }
 /* hide scrollbar */
 ::-webkit-scrollbar { display: none; }
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e

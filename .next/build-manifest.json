@@ -1,20 +1,38 @@
 {
+<<<<<<< HEAD
   "pages": {
     "/_app": []
   },
   "devFiles": [],
   "polyfillFiles": [
-    "static/chunks/03~yq9q893hmn.js"
+    "static/chunks/0cz1d0mv5g_q7.js"
   ],
   "lowPriorityFiles": [
-    "static/OfDfEbko-jrKHPwPvL5IR/_buildManifest.js",
-    "static/OfDfEbko-jrKHPwPvL5IR/_ssgManifest.js",
-    "static/OfDfEbko-jrKHPwPvL5IR/_clientMiddlewareManifest.js"
+    "static/CBfZYR2Z3InJGdtu7iVfm/_buildManifest.js",
+    "static/CBfZYR2Z3InJGdtu7iVfm/_ssgManifest.js",
+    "static/CBfZYR2Z3InJGdtu7iVfm/_clientMiddlewareManifest.js"
   ],
   "rootMainFiles": [
-    "static/chunks/0ht900cau6_ur.js",
-    "static/chunks/03cnjj9mnzy_p.js",
-    "static/chunks/07lhk_q6pmm3r.js",
-    "static/chunks/turbopack-0bxcrz71-nfi1.js"
+    "static/chunks/1jq4o6yq14o4c.js",
+    "static/chunks/2xesdlkc9adud.js",
+    "static/chunks/3n7dm2ojtyzwn.js",
+    "static/chunks/turbopack-0o-q90cutyfr6.js"
   ]
+=======
+  "polyfillFiles": [
+    "static/chunks/polyfills.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "rootMainFilesTree": {},
+  "pages": {
+    "/_app": []
+  },
+  "ampFirstPages": []
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
 }

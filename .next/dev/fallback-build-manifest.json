@@ -1,5 +1,8 @@
 {
   "pages": {
+<<<<<<< HEAD
+    "/_app": []
+=======
     "/_app": [
       "static/chunks/node_modules_next_dist_compiled_0o6l_m6._.js",
       "static/chunks/node_modules_next_dist_shared_lib_0n1wg2c._.js",
@@ -25,6 +28,7 @@
       "static/chunks/pages__error_07xvfw~._.js",
       "static/chunks/turbopack-pages__error_0.i_zsq._.js"
     ]
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
   },
   "devFiles": [],
   "polyfillFiles": [],
