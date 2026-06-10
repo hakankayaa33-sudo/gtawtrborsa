@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GoPostalApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4affda74cd2ca8b364899919e98a04534a6f3de6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+602dc1520b2b48bcb01c0ad707caac046fa073a7")]
 [assembly: System.Reflection.AssemblyProductAttribute("GoPostalApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GoPostalApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
