@@ -2,7 +2,10 @@
   "name": "gopostal-kargo",
   "private": true,
   "version": "0.1.0",
+<<<<<<< HEAD
   "type": "module",
+=======
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
   "scripts": {
     "dev": "next dev -p 5173",
     "clean-dev": "if exist .next (rd /s /q .next) && next dev -p 5173",
@@ -12,6 +15,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@supabase/supabase-js": "^2.107.0",
     "discord.js": "^14.26.4",
     "dotenv": "^17.4.2",
@@ -25,5 +29,20 @@
     "@tailwindcss/postcss": "^4.3.0",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0"
+=======
+    "@supabase/supabase-js": "^2.48.1",
+    "cors": "^2.8.6",
+    "html2canvas": "^1.4.1",
+    "lucide-react": "^0.474.0",
+    "next": "^16.2.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-quill": "^2.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19"
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
   }
 }

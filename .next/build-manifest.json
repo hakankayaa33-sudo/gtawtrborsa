@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "pages": {
     "/_app": []
   },
@@ -17,4 +18,21 @@
     "static/chunks/3n7dm2ojtyzwn.js",
     "static/chunks/turbopack-0o-q90cutyfr6.js"
   ]
+=======
+  "polyfillFiles": [
+    "static/chunks/polyfills.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "rootMainFilesTree": {},
+  "pages": {
+    "/_app": []
+  },
+  "ampFirstPages": []
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
 }

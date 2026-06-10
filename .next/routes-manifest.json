@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "version": 3,
   "pages404": true,
@@ -61,3 +62,6 @@
     "queryHeader": "x-nextjs-rewritten-query"
   }
 }
+=======
+{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[]}
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e

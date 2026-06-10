@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
@@ -10,3 +11,25 @@
     background-repeat: no-repeat;
   }
 }
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.animate-pulse-dot { animation: pulse-dot 2s infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin-btn { animation: spin 0.7s linear infinite; display: inline-block; }
+@keyframes pulse-logo {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+.animate-pulse-logo {
+  animation: pulse-logo 2s infinite ease-in-out;
+}
+/* hide scrollbar */
+::-webkit-scrollbar { display: none; }
+>>>>>>> 6ab6976ea0e5f3b6f0ff38fe8d9587e0b1ba223e
