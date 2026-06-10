@@ -16,7 +16,7 @@ const supabase = ("TURBOPACK compile-time truthy", 1) ? (0, __TURBOPACK__importe
 }),
 "[project]/app/page.js [app-ssr] (ecmascript)", ((__turbopack_context__, module, exports) => {
 
-const e = new Error("Could not parse module '[project]/app/page.js'\n\nExpected '</', got 'ident'");
+const e = new Error("Could not parse module '[project]/app/page.js'\n\nExpression expected");
 e.code = 'MODULE_UNPARSABLE';
 throw e;
 }),

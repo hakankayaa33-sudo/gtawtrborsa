@@ -22,7 +22,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 }),
 "[project]/app/page.js [app-client] (ecmascript)", ((__turbopack_context__, module, exports) => {
 
-const e = new Error("Could not parse module '[project]/app/page.js'\n\nExpected '</', got 'ident'");
+const e = new Error("Could not parse module '[project]/app/page.js'\n\nExpression expected");
 e.code = 'MODULE_UNPARSABLE';
 throw e;
 }),

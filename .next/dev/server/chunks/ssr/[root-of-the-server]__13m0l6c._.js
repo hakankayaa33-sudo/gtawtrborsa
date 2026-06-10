@@ -7,7 +7,7 @@ module.exports = mod;
 }),
 "[project]/app/page.js [app-rsc] (ecmascript)", ((__turbopack_context__, module, exports) => {
 
-const e = new Error("Could not parse module '[project]/app/page.js'\n\nExpected '</', got 'ident'");
+const e = new Error("Could not parse module '[project]/app/page.js'\n\nUnexpected token `.`. Expected ... , *,  (, [, :, , ?, = or an identifier");
 e.code = 'MODULE_UNPARSABLE';
 throw e;
 }),

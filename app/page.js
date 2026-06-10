@@ -1,6 +1,6 @@
 'use client';
 import { supabase } from '../supabase'; // Supabase istemcisini içe aktar
-import { useState, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 
 // Discord Webhook Yardımcı Fonksiyonu (Dosyanın en başında tanımlanmalı)
@@ -148,30 +148,80 @@ const RANK_LABELS = {
 // Yükleme Ekranı Bileşeni
 const LoadingScreen = ({ onFinished }) => {
   const [isSliding, setIsSliding] = useState(false);
-  const [isFading, setIsFading] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false); // Ekranın tamamen solması için yeni durum
+
+  const handleCloseBanner = useCallback(() => {
+    setIsFadingOut(true);
+    setTimeout(onFinished, 500); // Solma süresi
+  }, [onFinished]);
 
   useEffect(() => {
-    const slideTimer = setTimeout(() => setIsSliding(true), 2000); // 2 saniye yanıp söndükten sonra kaydır
-    const fadeTimer = setTimeout(() => setIsFading(true), 3000);   // 1 saniyelik kayma animasyonundan sonra karart
-    const finishTimer = setTimeout(onFinished, 3500);              // 0.5 saniyelik kararma sonrası bitir
+    let slideTimer, showBannerTimer, autoCloseBannerTimer;
+
+    // Aşama 1: Logo animasyonu (nabız atışı ve kenara kayma)
+    slideTimer = setTimeout(() => {
+      setIsSliding(true);
+    }, 500); // Logo 1.5 saniye sonra köşeye kayar
+
+    // Aşama 2: Logo kaydıktan sonra afişi göster
+    showBannerTimer = setTimeout(() => {
+      setShowBanner(true);
+      // Afişin otomatik kapanma zamanlayıcısını başlat
+      autoCloseBannerTimer = setTimeout(() => {
+        handleCloseBanner();
+      }, 15000); // Afiş 15 saniye sonra otomatik kapanır
+    }, 500); // Afiş, kayma başladıktan 1.5 saniye sonra (toplam 3 saniye) görünür olur
 
     return () => {
       clearTimeout(slideTimer);
-      clearTimeout(fadeTimer);
-      clearTimeout(finishTimer);
+      clearTimeout(showBannerTimer);
+      clearTimeout(autoCloseBannerTimer); // Bileşen erken kaldırılırsa zamanlayıcıyı temizle
     };
-  }, [onFinished]);
+  }, [handleCloseBanner]);
 
   return (
-    <div className={`fixed inset-0 bg-background z-[100] transition-opacity duration-500 ${isFading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-      <div className={`absolute transition-all duration-1000 ease-in-out ${isSliding ? 'top-2 left-4 sm:left-6' : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'}`}>
-        <img
-          src="/gtawtr-go.webp"
-          alt="Yükleniyor..."
-          className={`transition-transform duration-1000 ease-in-out ${isSliding ? 'scale-[0.33]' : 'scale-100 animate-pulse-logo'}`}
-          style={{ width: '9rem', height: '9rem' }} // Başlangıç boyutu 144px
-        />
-      </div>
+    <div className={`fixed inset-0 bg-background z-[100] transition-opacity duration-500 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+    {/* Başlangıç Logo Animasyonu - afiş görünene kadar aktif */}
+     {!showBanner && (
+        <div 
+          className="absolute top-1/2 left-1/2 flex flex-col items-center justify-center transition-opacity ease-in-out select-none"
+          style={{
+            transform: 'translate(-50%, -50%)', // Ekranı hem dikey hem yatay kesin ortalar
+            transitionDuration: '1000ms',        // Geçiş süresi tam 1 saniye
+            opacity: isSliding ? 0 : 1,          // Tetiklendiğinde 1 saniyede solup kaybolur
+          }}
+        >
+          <img
+            src="/gtawtr-go.webp"
+            alt="Yükleniyor..."
+            className="animate-pulse-logo object-contain"
+            style={{ width: '9rem', height: '9rem' }}
+          />
+          <p className="text-white text-sm font-semibold mt-4 text-center whitespace-nowrap">
+          </p>
+        </div>
+      )}
+
+     {/* Afiş Animasyonu - başlangıç logo aşamasından sonra görünür */}
+      {showBanner && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 animate-fadeIn"
+          style={{ backgroundColor: 'transparent', backgroundImage: 'none' }} // Satır içi CSS ile kesin şeffaflık sağladık
+        >
+          <img
+            src="/KtULvLP.png" // Afiş görseli
+            alt="GoPostal Afiş"
+            className="max-w-[80vw] max-h-[80vh] object-contain"
+          />
+          <button
+            onClick={handleCloseBanner}
+            className="absolute top-4 right-4 text-white text-3xl font-bold bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors"
+          >
+            &times;
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -426,6 +476,30 @@ const CallCourierForm = ({ onCallCourier, addNotification }) => {
   );
 };
 
+// Karakter Seçim Modalı
+const CharacterSelectModal = ({ characters, onSelect }) => {
+  return (
+    <div className="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center backdrop-blur-md">
+      <div className="bg-card border border-white/10 p-8 rounded-2xl max-w-md w-full text-center animate-popIn">
+        <h2 className="text-2xl font-bold mb-2">Karakter Seçimi</h2>
+        <p className="text-muted-fg mb-6 text-sm">Lojistik sistemine hangi karakterinizle devam etmek istiyorsunuz?</p>
+        <div className="space-y-3">
+          {characters.map((char) => (
+            <button
+              key={char.id || char.name}
+              onClick={() => onSelect(char)}
+              className="w-full p-4 rounded-xl bg-secondary border border-white/5 hover:border-primary/50 hover:bg-primary/5 transition-all text-left flex items-center justify-between group"
+            >
+              <span className="font-bold group-hover:text-primary transition-colors">{char.name}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-muted-fg group-hover:text-primary"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // İş Ortakları Bölümü
 const PartnersSection = ({ partners }) => {
   return (
@@ -637,6 +711,7 @@ const CreateShipmentForm = ({ onCreateShipment, addNotification }) => {
     destinationAddress: '',
     weight: '',
     email: '',
+    phone: '',
   });
   const [isSigned, setIsSigned] = useState(false);
   const signatureCanvasRef = useRef(null);
@@ -726,6 +801,7 @@ const CreateShipmentForm = ({ onCreateShipment, addNotification }) => {
       return;
     }
     const signatureDataUrl = signatureCanvasRef.current.toDataURL('image/png');
+    // Eğer giriş yapılmışsa formu kullanıcının kimliğiyle zenginleştir
     onCreateShipment({ ...formData, signatureDataUrl });
   };
 
@@ -742,6 +818,7 @@ const CreateShipmentForm = ({ onCreateShipment, addNotification }) => {
             <input type="text" name="originAddress" placeholder="Teslim Alınacak Adres (örn: Grove Street)" value={formData.originAddress} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl border border-white/[0.08] bg-secondary" required />
             <input type="text" name="destinationAddress" placeholder="Teslim Edilecek Adres (örn: Vinewood Hills)" value={formData.destinationAddress} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl border border-white/[0.08] bg-secondary" required />
             <input type="text" name="weight" placeholder="Ağırlık (örn: 1.5 kg)" value={formData.weight} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl border border-white/[0.08] bg-secondary" required />
+            <input type="tel" name="phone" placeholder="Telefon Numaranız" value={formData.phone} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl border border-white/[0.08] bg-secondary" required />
             <input type="text" name="email" placeholder="Mail Adresiniz (Discord ismi #)" value={formData.email} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl border border-white/[0.08] bg-secondary" required />
             <div className="pt-4">
               <h3 className="text-lg font-semibold">Gönderici İmzası</h3>
@@ -892,7 +969,7 @@ const DeclarationDocument = () => {
   return (
     <Fragment>
       <style jsx global>{`
-                .declaration-page { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; }
+                .declaration-page { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: flex-start; max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box; }
                 .panel { width: 350px; background: #1a1d22; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.08); position: sticky; top: 90px; z-index: 100; }
                 .panel h3 { margin-top: 0; color: #ED3A32; text-transform: uppercase; font-weight: 800; border-bottom: 2px solid #ED3A32; padding-bottom: 10px; font-size: 18px;}
                 .form-group { margin-bottom: 12px; }
@@ -906,9 +983,9 @@ const DeclarationDocument = () => {
                 .btn-download { color: #fff; width: 100%; font-size: 14px; padding: 12px; margin-top: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;}
                 .btn-phone { background-color: #2A3F9D; }
                 .btn-phone:hover { background-color: #1a2a6e; }
-                .btn-paper { background-color: #444; margin-top: 10px; }
+                .btn-paper { background-color: #444; }
                 .btn-paper:hover { background-color: #222; }
-                .phone-mockup { position: relative; width: 330px; height: 720px; background: #111; border-radius: 45px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 3px solid #222; user-select: none; flex-shrink: 0; }
+                .phone-mockup { position: relative; max-width: 330px; width: 100%; height: auto; aspect-ratio: 330 / 720; background: #111; border-radius: 45px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 3px solid #222; user-select: none; flex-shrink: 0; }
                 .phone-screen { background: #fdfdfd; width: 100%; height: 100%; border-radius: 35px; overflow: hidden; position: relative; display: flex; flex-direction: column; color: #333; }
                 .notch { position: absolute; top: 0; left: 100px; width: 130px; height: 30px; background: #111; border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; z-index: 999; }
                 .notch::after { content: ''; position: absolute; top: 6px; left: 45px; width: 40px; height: 4px; background: #333; border-radius: 2px; }
@@ -924,8 +1001,8 @@ const DeclarationDocument = () => {
                 .signature-area { margin-top: auto; margin-bottom: 10px; text-align: center; background: white; padding: 10px; border-radius: 10px; border: 1px solid #e0e0e0; position: relative; width: 100%; }
                 .sign-title { font-size: 10px; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
                 .sign-name { font-size: 13px; font-weight: 800; color: #111; margin-bottom: 5px;}
-                .signature-canvas { border: 2px dashed #2A3F9D; border-radius: 8px; cursor: crosshair; background-color: #fafafa; width: 100%; max-width: 250px; height: 70px; display: block; margin: 0 auto; touch-action: none; }
-                .paper-mockup { width: 420px; min-height: 594px; height: auto; background: #ffffff; border: 1px solid #ccc; box-shadow: 2px 2px 8px rgba(0,0,0,0.1), inset 0 0 50px rgba(0,0,0,0.02); padding: 35px 40px; font-family: 'Times New Roman', Times, serif; color: #111; position: relative; flex-shrink: 0; display: flex; flex-direction: column; }
+                .signature-canvas { border: 2px dashed #2A3F9D; border-radius: 8px; cursor: crosshair; background-color: #fafafa; width: 100%; max-width: 250px; height: 70px; display: block; margin: 0 auto; touch-action: none; } /* Keep this as is, it's for the canvas inside the phone mockup */
+                .paper-mockup { max-width: 420px; width: 100%; height: auto; aspect-ratio: 210 / 297; background: #ffffff; border: 1px solid #ccc; box-shadow: 2px 2px 8px rgba(0,0,0,0.1), inset 0 0 50px rgba(0,0,0,0.02); padding: 35px 40px; font-family: 'Times New Roman', Times, serif; color: #111; position: relative; flex-shrink: 0; display: flex; flex-direction: column; }
                 .paper-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
                 .paper-logo { max-width: 100px; filter: grayscale(100%) contrast(150%); margin-bottom: 10px; }
                 .paper-title { font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
@@ -2304,7 +2381,7 @@ const AdminPanel = ({ shipments, setShipments, pages, setPages, couriers, setCou
                             className="w-full p-4 rounded-xl border border-white/[0.08] bg-secondary font-mono text-sm leading-relaxed text-foreground"
                             required
                           />
-                          <p className="text-xs text-muted-fg mt-2">HTML etiketleri kullanabilirsiniz. Örn: <code className="text-xs bg-black/20 px-1 py-0.5 rounded ml-1">&lt;img src="..." style="float:left; margin-right:1rem; width:150px;"&gt;</code></p>
+                          <p className="text-xs text-muted-fg mt-2">HTML etiketleri kullanabilirsinizz. Örn: <code className="text-xs bg-black/20 px-1 py-0.5 rounded ml-1">&lt;img src="..." style="float:left; margin-right:1rem; width:150px;"&gt;</code></p>
                         </div>
                       ) : (
                         <div>
@@ -2753,6 +2830,7 @@ const AdminPanel = ({ shipments, setShipments, pages, setPages, couriers, setCou
 // Çalışan Paneli
 function EmployeePanel({ shipments, setShipments, courier, couriers, courierCalls, setCourierCalls, handleCreatePublicShipment, internalMails, sendInternalMail, uploadMailImage, addNotification, clearMailsCount }) {
   const myShipments = Object.values(shipments).filter(s => s.courierId === courier.id && !['delivered', 'failed'].includes(s.currentStatus));
+  const allActiveShipments = Object.values(shipments).filter(s => !['delivered', 'failed'].includes(s.currentStatus));
   const [activeTab, setActiveTab] = useState('my_shipments');
   const [employeeMailContentState, setEmployeeMailContentState] = useState('list'); // 'list', 'compose', 'view'
   const [selectedEmployeeMail, setSelectedEmployeeMail] = useState(null); // Görüntülenen veya cevaplanan mail nesnesi
@@ -2770,7 +2848,8 @@ function EmployeePanel({ shipments, setShipments, courier, couriers, courierCall
   const canViewRequests = ['staff', 'manager'].includes(rank);
 
   const menuItems = [
-    { id: 'my_shipments', label: 'Görevlerim', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> },
+    { id: 'my_shipments', label: 'Üzerimdeki Kargolar', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> },
+    { id: 'all_active', label: 'Aktif Kargolar', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> },
     { id: 'archive', label: 'Arşiv', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg> },
     canViewAll && { id: 'all_shipments', label: 'Tüm Kargolar', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 22H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 1.14-1.8L9.5 3.45a2 2 0 0 1 2.06 0L17.86 5.7a2 2 0 0 1 1.14 1.8V14" /></svg> },
     canViewAll && { id: 'create_shipment', label: 'Yeni Kargo', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg> },
@@ -2950,6 +3029,7 @@ function EmployeePanel({ shipments, setShipments, courier, couriers, courierCall
         <div className="bg-card/50 p-4 rounded-xl border border-white/10 mb-6">
           <p className="text-xs text-muted-fg uppercase font-bold mb-1">Oturum Açan</p>
           <p className="font-bold text-foreground">{courier.name}</p>
+          <p className="text-[10px] text-muted-fg">GTAW ID: {courier.gtaw_id || 'N/A'}</p>
           <p className="text-xs text-primary font-semibold">{RANK_LABELS[rank]}</p>
         </div>
         <nav className="flex flex-col space-y-1">
@@ -2968,7 +3048,7 @@ function EmployeePanel({ shipments, setShipments, courier, couriers, courierCall
 }
 
 // Müşteri Paneli Bileşeni (Normal Giriş Yapanlar İçin)
-const CustomerPanel = ({ shipments, user, internalMails, sendInternalMail, addNotification, clearMailsCount, setViewingShipment }) => {
+const CustomerPanel = ({ shipments, user, internalMails, sendInternalMail, addNotification, clearMailsCount, setViewingShipment, setCurrentView }) => {
   const [activeTab, setActiveTab] = useState('shipments');
   const [mailContentState, setMailContentState] = useState('list');
   const [selectedMail, setSelectedMail] = useState(null);
@@ -2978,12 +3058,12 @@ const CustomerPanel = ({ shipments, user, internalMails, sendInternalMail, addNo
   }, [activeTab, clearMailsCount]);
 
   // Sadece bu kullanıcıya ait kargoları filtrele (Email/Discord alanı üzerinden eşleştirme)
-  const myShipments = Object.values(shipments).filter(s =>
-    s.email === user.username ||
-    s.email === `@${user.username}` ||
-    s.sender === user.username ||
-    (user.subscriberCompany && s.sender === user.subscriberCompany)
-  );
+  const myShipments = Object.values(shipments).filter(s => {
+    const identifiers = [user.username, `@${user.username}`, user.name].filter(Boolean);
+    return (s.user_id && String(s.user_id) === String(user.id)) || 
+           identifiers.some(id => s.email === id || s.sender === id || s.receiver === id) || 
+           (user.subscriberCompany && s.sender === user.subscriberCompany);
+  });
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-8">
@@ -2991,6 +3071,7 @@ const CustomerPanel = ({ shipments, user, internalMails, sendInternalMail, addNo
         <div className="bg-card/50 p-4 rounded-xl border border-white/10 mb-6">
           <p className="text-xs text-muted-fg uppercase font-bold mb-1">Müşteri Hesabı</p>
           <p className="font-bold text-foreground">{user.name || user.username}</p>
+          <p className="text-[10px] text-muted-fg mt-1">GTAW ID: {user.id || 'Bilinmiyor'}</p>
         </div>
         <nav className="flex flex-col space-y-1">
           <button onClick={() => {setActiveTab('shipments'); setViewingShipment(null);}} className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${activeTab === 'shipments' ? 'bg-primary/10 text-primary' : 'text-muted-fg hover:bg-white/5 hover:text-foreground'}`}>
@@ -3014,7 +3095,7 @@ const CustomerPanel = ({ shipments, user, internalMails, sendInternalMail, addNo
                     <p className="font-semibold text-sm">{ship.origin} → {ship.destination}</p>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${STATUS_CFG[ship.currentStatus]?.color} ${STATUS_CFG[ship.currentStatus]?.bg} ${STATUS_CFG[ship.currentStatus]?.border}`}>{STATUS_CFG[ship.currentStatus]?.label}</span>
                   </div>
-                  <button onClick={() => setViewingShipment(ship)} className="text-sm px-4 py-1.5 rounded-md bg-accent text-white font-medium">Detaylar</button>
+                  <button onClick={() => setCurrentView({ type: 'searchResult', data: ship })} className="text-sm px-4 py-1.5 rounded-md bg-accent text-white font-medium hover:brightness-90 transition-all">Detaylar</button>
                 </div>
               )) : <p className="text-muted-fg italic py-10 text-center">Henüz adınıza kayıtlı kargo bulunmuyor.</p>}
             </div>
@@ -3087,6 +3168,9 @@ export default function Home() {
   const [isGopoChatOpen, setIsGopoChatOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [viewingShipment, setViewingShipment] = useState(null);
+  const [pendingUser, setPendingUser] = useState(null);
+  const [showCharSelect, setShowCharSelect] = useState(false);
 
   useEffect(() => {
     sessionRef.current = session;
@@ -3096,76 +3180,110 @@ export default function Home() {
     couriersRef.current = couriers;
   }, [couriers]);
 
+  // Oturum kurulumunu ve yetki kontrollerini yöneten yardımcı fonksiyon
+  const setupSession = useCallback(async (userData, providedCourierMap = null) => {
+    if (!userData) return;
+    const role = userData.role || 'customer';
+
+    // Kullanıcı bilgilerini Supabase 'app_users' tablosuna kaydet/güncelle
+    if (supabase && userData.id) {
+      try {
+        await supabase.from('app_users').upsert({
+          id: userData.id,
+          username: userData.username,
+          name: userData.name || userData.username,
+          role: role,
+          last_login: new Date().toISOString()
+        }, { onConflict: 'id' });
+      } catch (e) {
+        console.error("app_users tablosuna yazilirken hata olustu:", e);
+      }
+    }
+
+    if (role === 'admin') {
+      setSession({ type: 'admin', user: userData });
+      setCurrentView({ type: 'admin' });
+    } else if (role === 'customer') {
+      let userToSet = userData;
+      // Abone kontrolü: GTAW ID ile eşleşen bir abonelik var mı?
+      if (supabase && userData.id) {
+        const { data: subscriberData } = await supabase.from('subscribers')
+          .select('companyName')
+          .eq('gtaw_id', userData.id)
+          .maybeSingle();
+        if (subscriberData) userToSet = { ...userToSet, subscriberCompany: subscriberData.companyName };
+      }
+      setSession({ type: 'customer', user: userToSet });
+      setCurrentView({ type: 'customer' });
+    } else if (role === 'employee') {
+      let courierMap = providedCourierMap;
+      
+      if (!courierMap) {
+        const { data: curs } = await supabase.from('couriers').select('*');
+        courierMap = curs ? Object.fromEntries(curs.map(c => [c.id, c])) : {};
+        if (curs) setCouriers(courierMap);
+      }
+
+      // Önce courierId ile, yoksa karakter ismiyle eşleştir
+      let courier = userData.courierId ? courierMap[userData.courierId] : null;
+      
+      if (!courier && userData.name) {
+        courier = Object.values(courierMap).find(
+          c => c.name.toLowerCase() === userData.name.toLowerCase()
+        );
+      }
+
+      if (courier) {
+        setSession({ type: 'employee', user: courier });
+        setCurrentView({ type: 'employee' });
+      } else {
+        // Rol 'employee' ama kurye kaydı bulunamadıysa müşteri gibi davran
+        setSession({ type: 'customer', user: userData });
+        setCurrentView({ type: 'customer' });
+      }
+    }
+
+    // Okunmamış mesaj sayısını güncelle
+    const myId = role === 'admin' ? 'admin' : (userData.courierId || userData.id);
+    if (myId && supabase) {
+      const { count } = await supabase.from('internal_mails').select('*', { count: 'exact', head: true })
+        .or(`receiver_id.eq.${myId},receiver_id.eq.all`).is('read_at', null);
+      setUnreadMailsCount(count || 0);
+    }
+  }, [supabase]);
+
   useEffect(() => {
     const fetchData = async () => {
       if (!supabase) return;
       try {
+        // Önce kuryeleri çek
+        const { data: curs } = await supabase.from('couriers').select('*');
+        const courierMap = curs ? Object.fromEntries(curs.map(c => [c.id, c])) : {};
+        if (curs) {
+            setCouriers(courierMap);
+            couriersRef.current = courierMap;
+        }
+
         // Oturum, GTA World OAuth çerezi üzerinden sunucudan (me.php) alınır.
-        let auth = null;
         try {
           const res = await fetch('/auth/me.php', { credentials: 'same-origin' });
           if (res.ok) {
             const data = await res.json();
             if (data?.authenticated && data.user) {
-              auth = {
-                role: data.user.role || 'customer',
-                oauthUser: data.user,
-                courierId: data.user.courierId || null,
-              };
+              // UCP'de karakter varsa her seferinde seçtir (Zorunlu karakter secimi)
+              if (data.user.characters && data.user.characters.length > 0) {
+                setPendingUser(data.user);
+                setShowCharSelect(true);
+              } else {
+                await setupSession(data.user, courierMap);
+              }
             }
           }
         } catch (e) { /* oturum yok veya endpoint erişilemez */ }
 
-        // Admin ve müşteri oturumu hemen kurulabilir. Çalışan oturumu, ilgili
-        // courier kaydı yüklendikten sonra (aşağıda) kurulur.
-        if (auth?.role === 'admin') {
-          setSession({ type: 'admin', user: null });
-          setCurrentView({ type: 'admin' });
-        } else if (auth?.role === 'customer') {
-          let userToSet = auth.oauthUser;
-          
-          // Eğer müşteri giriş yaptıysa, abone olup olmadığını kontrol et
-          if (auth.oauthUser?.id) {
-            const { data: subscriberData } = await supabase.from('subscribers')
-              .select('companyName')
-              .eq('gtaw_id', auth.oauthUser.id)
-              .maybeSingle();
-              
-            if (subscriberData) {
-              userToSet = { ...userToSet, subscriberCompany: subscriberData.companyName };
-            }
-          }
-          
-          setSession({ type: 'customer', user: userToSet });
-          setCurrentView({ type: 'customer' });
-        }
-
-        const myId = auth?.role === 'admin' ? 'admin' : (auth?.courierId || auth?.oauthUser?.id);
-        if (myId) {
-          const { count } = await supabase.from('internal_mails').select('*', { count: 'exact', head: true })
-            .or(`receiver_id.eq.${myId},receiver_id.eq.all`).is('read_at', null);
-          setUnreadMailsCount(count || 0);
-        }
-
         const { data: ships } = await supabase.from('shipments').select('*');
         if (ships) setShipments(Object.fromEntries(ships.map(s => [s.trackingNumber, s])));
-
-        const { data: curs } = await supabase.from('couriers').select('*');
-        const courierMap = curs ? Object.fromEntries(curs.map(c => [c.id, c])) : {};
-        if (curs) setCouriers(courierMap);
-
-        // Çalışan oturumu: OAuth kimliği bir courier kaydına bağlandıysa, panel ve
-        // mail/gönderi mantığının çalışması için tam courier kaydını oturuma koy.
-        if (auth?.role === 'employee') {
-          const courier = auth.courierId ? courierMap[auth.courierId] : null;
-          if (courier) {
-            setSession({ type: 'employee', user: courier });
-            setCurrentView({ type: 'employee' });
-          } else {
-            // Rol 'employee' ama courier bağlı değil -> müşteri gibi davran.
-            setSession({ type: 'customer', user: auth.oauthUser });
-          }
-        }
+        if (curs) setCouriers(Object.fromEntries(curs.map(c => [c.id, c])));
 
         const { data: msgs } = await supabase.from('contact_messages').select('*');
         if (msgs) setContactMessages(Object.fromEntries(msgs.map(m => [m.id, m])));
@@ -3247,6 +3365,14 @@ export default function Home() {
     return () => { if (supabase && channel) supabase.removeChannel(channel); };
   }, []);
 
+  // Karakter seçimi yapıldığında çağrılır
+  const handleCharacterSelect = (char) => {
+    const updatedUser = { ...pendingUser, name: char.name, selectedCharacter: char };
+    setupSession(updatedUser);
+    setShowCharSelect(false);
+    setPendingUser(null);
+  };
+
   const addNotification = (message, type = 'info') => {
     const id = Date.now() + Math.random();
     setNotifications(prev => [...prev, { id, message, type }]);
@@ -3276,6 +3402,13 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Fallback to ensure loading screen eventually disappears, even if internal timers fail
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      setIsAppLoading(false);
+    }, 20000); // Yükleme ekranının yeni animasyon süresine göre ayarlandı (yaklaşık 18.5 saniye)
+    return () => clearTimeout(fallbackTimer);
+  }, []);
   // Apply background style
   useEffect(() => {
     document.documentElement.style.setProperty('--bg-image', `url(${BACKGROUND_IMAGES[currentBgIndex]})`);
@@ -3366,11 +3499,15 @@ export default function Home() {
 
     const newEntry = {
       trackingNumber: newTrackingNumber,
-      sender: formData.sender,
+      // Eğer kullanıcı giriş yapmışsa, formdaki ismi değil kendi ismini/karakterini kullan (opsiyonel: form boşsa)
+      sender: formData.sender || (session?.user?.name || session?.user?.username || 'Anonim'),
       receiver: formData.receiver,
       origin: formData.originAddress,
       destination: formData.destinationAddress,
-      email: formData.email || (session?.type === 'customer' ? `@${session.user.username}` : ''), // Giriş yapılmışsa otomatik bağla
+      // Filtreleme için email alanına kullanıcının karakter ismini veya kullanıcı adını basıyoruz
+      user_id: session?.user?.id,
+      phone: formData.phone,
+      email: formData.email || (session?.user ? (session.user.name || session.user.username) : ''),
       signatureDataUrl: formData.signatureDataUrl,
       weight: formData.weight,
       currentStatus: 'received',
@@ -3543,6 +3680,12 @@ export default function Home() {
       return;
     }
     if (slug === 'gonderim-olustur') {
+      // Eğer giriş yapılmışsa ve karakter seçilmemişse önce karakter seçtir (özellikle mobilde/telefonda)
+      if (session?.user && !session.user.name && session.user.characters?.length > 0) {
+        setPendingUser(session.user);
+        setShowCharSelect(true);
+        return;
+      }
       setCurrentView({ type: 'createShipment' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -3570,7 +3713,7 @@ export default function Home() {
       case 'employee':
         return <div className="py-8"><EmployeePanel shipments={shipments} setShipments={setShipments} courier={session?.user} couriers={couriers} courierCalls={courierCalls} setCourierCalls={setCourierCalls} handleCreatePublicShipment={handleCreatePublicShipment} internalMails={internalMails} sendInternalMail={sendInternalMail} uploadMailImage={uploadMailImage} addNotification={addNotification} clearMailsCount={clearMailsCount} /></div>;
       case 'customer':
-        return <CustomerPanel shipments={shipments} user={session.user} internalMails={internalMails} sendInternalMail={sendInternalMail} addNotification={addNotification} clearMailsCount={clearMailsCount} setViewingShipment={setViewingShipment} />;
+        return <CustomerPanel shipments={shipments} user={session.user} internalMails={internalMails} sendInternalMail={sendInternalMail} addNotification={addNotification} clearMailsCount={clearMailsCount} setViewingShipment={setViewingShipment} setCurrentView={setCurrentView} />;
       case 'createShipment':
         return <div className="py-8"><CreateShipmentForm onCreateShipment={handleCreatePublicShipment} addNotification={addNotification} /></div>;
       case 'subscribe':
@@ -3729,6 +3872,12 @@ export default function Home() {
           <Notification key={n.id} message={n.message} type={n.type} onDismiss={() => removeNotification(n.id)} />
         ))}
       </div>
+      {showCharSelect && pendingUser && (
+        <CharacterSelectModal 
+          characters={pendingUser.characters} 
+          onSelect={handleCharacterSelect} 
+        />
+      )}
       {isGopoChatOpen && <GopoChatModal onClose={() => setIsGopoChatOpen(false)} />}
       <style jsx global>{` 
         body::before {
@@ -3744,6 +3893,13 @@ export default function Home() {
           opacity: 0.07;
           z-index: -1;
           transition: background-image 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
         }
         @keyframes float-heart {
           0% { transform: translateY(0) scale(0.5); opacity: 1; }
